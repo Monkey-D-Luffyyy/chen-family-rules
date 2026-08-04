@@ -2,6 +2,12 @@
 
 一份在线“恋爱家法”互动网页：犯错登记、条例管理、每日三省打卡，附带**加密云端同步**，支持电脑和手机使用。
 
+## 在线地址
+
+<https://monkey-d-luffyyy.github.io/chen-family-rules/>
+
+已部署在 GitHub Pages（HTTPS）。修改代码后执行 `git add .` + `git commit` + `git push`，Pages 会自动重新构建上线。
+
 ## 本地使用
 
 直接用浏览器打开 `陈氏家法.html` 即可，数据保存在浏览器本地（localStorage）。建议定期点击页面里的 **备份数据** 按钮导出 JSON。
