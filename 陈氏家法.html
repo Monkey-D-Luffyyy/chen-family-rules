@@ -231,32 +231,30 @@
     opacity: .82;
   }
   .log-item.done .log-main { text-decoration-color: var(--ink-soft); }
-  .log-head {
+  .log-top {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
   }
   .log-date {
-    flex: none;
-    width: 62px;
-    text-align: center;
     background: var(--pink-bg);
-    border-radius: 10px;
-    padding: 8px 4px;
+    color: #c45b6e;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
   }
   .log-item.done .log-date { background: var(--green-bg); }
-  .log-date .d { font-size: 19px; font-weight: 800; color: #c45b6e; }
-  .log-item.done .log-date .d { color: #5f9b5d; }
-  .log-date .m { font-size: 11px; color: var(--ink-soft); }
+  .log-item.done .log-date { color: #5f9b5d; }
   .log-main { flex: 1; min-width: 0; }
   .log-tags {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    margin-top: 4px;
   }
   .tag {
     font-size: 12px;
@@ -458,20 +456,20 @@
     margin-top: 14px;
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 12px;
+    padding: 10px;
     background: #fffdfa;
   }
-  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .cal-head span { font-size: 14px; font-weight: 700; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-dow { font-size: 11px; color: var(--ink-soft); text-align: center; padding: 2px 0; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .cal-head span { font-size: 13px; font-weight: 700; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-dow { font-size: 10px; color: var(--ink-soft); text-align: center; padding: 1px 0; }
   .cal-cell {
-    aspect-ratio: 1;
+    height: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    border-radius: 8px;
+    font-size: 11px;
+    border-radius: 6px;
     color: var(--ink-soft);
   }
   .cal-cell.checked { background: var(--green-bg); color: #4e7e4c; font-weight: 700; }
@@ -605,7 +603,6 @@
     .mistake-form-foot { flex-direction: column; align-items: stretch; }
     .mistake-form-foot .btn { width: 100%; min-height: 44px; }
     .log-item { flex-wrap: wrap; gap: 10px; }
-    .log-date { width: 56px; }
     .log-actions { flex-direction: row; width: 100%; }
     .log-actions .btn { flex: 1; min-height: 40px; }
     .article { flex-wrap: wrap; gap: 10px; }
@@ -1079,17 +1076,16 @@ function renderMistakes() {
   const sorted = [...data.mistakes].sort((x, y) => (y.date + y.createdAt).localeCompare(x.date + x.createdAt));
   box.innerHTML = sorted.map(m => {
     const d = m.date ? m.date.split("-") : [];
-    const dDay = d.length === 3 ? parseInt(d[2], 10) : "—";
-    const dMon = d.length === 3 ? parseInt(d[1], 10) + "月" : "";
+    const dShort = d.length === 3 ? parseInt(d[1], 10) + "月" + parseInt(d[2], 10) + "日" : "";
     return `
       <div class="log-item ${m.status === "done" ? "done" : ""}">
-        <div class="log-head">
-          <div class="log-date"><div class="d">${dDay}</div><div class="m">${dMon}</div></div>
-          <div class="log-tags">
-            <span class="tag ${m.culprit}">${esc(nameOf(m.culprit))} 犯错</span>
-            ${m.articleId ? '<span class="tag article">' + esc(articleLabel(m.articleId)) + '</span>' : '<span class="tag other">其他</span>'}
-            ${m.status === "done" ? '<span class="tag" style="background:var(--green-bg);color:#5f9b5d">已履行</span>' : '<span class="tag" style="background:#fdf1e3;color:#b8862d">待履行</span>'}
-          </div>
+        <div class="log-top">
+          <div class="log-date">${esc(dShort)}</div>
+          ${m.status === "done" ? '<span class="tag" style="background:var(--green-bg);color:#5f9b5d">已履行</span>' : '<span class="tag" style="background:#fdf1e3;color:#b8862d">待履行</span>'}
+        </div>
+        <div class="log-tags">
+          <span class="tag ${m.culprit}">${esc(nameOf(m.culprit))} 犯错</span>
+          ${m.articleId ? '<span class="tag article">' + esc(articleLabel(m.articleId)) + '</span>' : '<span class="tag other">其他</span>'}
         </div>
         ${m.note ? '<div class="log-note">' + esc(m.note) + '</div>' : ""}
         ${m.penalty && m.penalty !== "\\" ? '<div class="log-penalty">⚖ 惩罚：' + esc(m.penalty) + '</div>' : ""}
