@@ -652,7 +652,7 @@
   <header class="header">
     <div class="seal">陈氏<br>家法</div>
     <h1>陈氏家法</h1>
-    <div class="motto">持家之宝典 · 恋爱之宪法 · <b>犯错即登记，新例即入册</b></div>
+    <div class="motto">持家之宝典 · 恋爱之宪法</div>
     <div class="header-actions">
       <button class="btn" id="btnSettings">⚙ 立约人设置</button>
       <button class="btn" id="btnExport">⬇ 备份数据</button>
@@ -966,9 +966,12 @@ function normalizeDaily(daily) {
   return out;
 }
 
+let suppressAutoSync = false;
+
 function save() {
   data.updatedAt = Date.now();
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  if (!suppressAutoSync) scheduleSync();
 }
 
 function uid() {
@@ -1469,6 +1472,14 @@ function setSyncStatus(text, cls) {
   el.className = "sync-status" + (cls ? " " + cls : "");
 }
 
+let syncTimer = null;
+let syncing = false;
+
+function scheduleSync() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => { syncNow(); }, 4000);
+}
+
 function toast(msg, type) {
   const el = document.getElementById("toast");
   if (!el) return;
@@ -1612,29 +1623,37 @@ async function pullFromCloud() {
 }
 
 async function syncNow() {
-  const cfg = getSyncConfig();
-  if (!cfg) {
-    setSyncStatus("未配置云同步，点击上方“云同步设置”完成配置", "err");
-    return { ok: false };
-  }
-  setSyncStatus("正在与云端同步…");
+  if (syncing) return { ok: false, reason: "busy" };
+  syncing = true;
+  suppressAutoSync = true;
   try {
-    const remote = await supabaseGet(cfg);
-    if (!remote) {
-      await pushToCloud();
-    } else {
-      const remoteData = await decryptPayload(remote, cfg.passphrase);
-      data = mergeData(data, remoteData);
-      save();
-      await pushToCloud();
+    const cfg = getSyncConfig();
+    if (!cfg) {
+      setSyncStatus("未配置云同步，点击上方“云同步设置”完成配置", "err");
+      return { ok: false };
     }
-    const now = new Date();
-    setSyncStatus("已同步 ✓ 上次同步 " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + "（云端数据已加密）", "ok");
-    render();
-    return { ok: true };
-  } catch (e) {
-    setSyncStatus("同步失败：" + e.message, "err");
-    return { ok: false, reason: e.message };
+    setSyncStatus("正在与云端同步…");
+    try {
+      const remote = await supabaseGet(cfg);
+      if (!remote) {
+        await pushToCloud();
+      } else {
+        const remoteData = await decryptPayload(remote, cfg.passphrase);
+        data = mergeData(data, remoteData);
+        save();
+        await pushToCloud();
+      }
+      const now = new Date();
+      setSyncStatus("已同步 ✓ 上次同步 " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + "（云端数据已加密）", "ok");
+      render();
+      return { ok: true };
+    } catch (e) {
+      setSyncStatus("同步失败：" + e.message, "err");
+      return { ok: false, reason: e.message };
+    }
+  } finally {
+    syncing = false;
+    suppressAutoSync = false;
   }
 }
 
@@ -1738,6 +1757,10 @@ document.getElementById("btnPull").addEventListener("click", handlePull);
 document.getElementById("mDate").value = today();
 render();
 setTimeout(() => { syncNow(); }, 1200);
+setInterval(() => { syncNow(); }, 60000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") scheduleSync();
+});
 
 /* expose for testing */
 window.__chenFamily = { mergeData, encryptPayload, decryptPayload, getSyncConfig, pushToCloud, pullFromCloud, syncNow };
