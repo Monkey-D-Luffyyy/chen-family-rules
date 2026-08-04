@@ -603,8 +603,8 @@
 
   <!-- Cloud sync -->
   <section class="card">
-    <div class="sec-title"><span class="dot" style="background:#6ba3d6"></span>云端同步<span class="spacer"></span><button class="btn mini blue" id="btnSyncSettings">☁ 云同步设置</button></div>
-    <div class="sync-status" id="syncStatus">未连接云端</div>
+    <div class="sec-title"><span class="dot" style="background:#6ba3d6"></span>云端同步<span class="spacer"></span><button class="btn mini blue" id="btnSyncSettings">☁ 高级设置</button></div>
+    <div class="sync-status" id="syncStatus">云端同步已内置，正在自动连接…</div>
     <div class="sync-actions">
       <button class="btn green" id="btnSyncNow">⟳ 双向同步</button>
       <button class="btn" id="btnPush">⬆ 上传覆盖云端</button>
@@ -738,8 +738,8 @@
 <!-- Sync settings modal -->
 <div class="modal-mask" id="syncModal">
   <div class="modal">
-    <h3>云同步设置</h3>
-    <div class="sync-tip">数据会先用“同步口令”加密后再上传云端，云端看不到明文。两台设备填相同的同步标识和口令即可互相同步。</div>
+    <h3>云端同步高级设置</h3>
+    <div class="sync-tip">默认已内置云端连接，两边打开网页即自动同步，无需任何设置。下面的内容仅供需要更换云端或口令时使用，一般不用改动。</div>
     <div class="field">
       <label>Supabase 项目地址（https://xxxx.supabase.co）</label>
       <input type="text" id="syncUrl" placeholder="https://abcd1234.supabase.co" autocomplete="off">
@@ -1179,16 +1179,24 @@ document.getElementById("btnReset").addEventListener("click", () => {
 /* ---------- cloud sync ---------- */
 const SYNC_KEY = "chen-family-sync-v1";
 
+const BUILTIN_SYNC = {
+  url: "https://fzgrxauidtcjxvpyvnjn.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6Z3J4YXVpZHRjanh2cHl2bmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4MjY2OTIsImV4cCI6MjEwMTQwMjY5Mn0.QrDv5PvtfrZeAibUCe3zecAxc1H1K5w54S7LWKkkopc",
+  syncId: "chen-family-520",
+  passphrase: "chen520home2026",
+  lastSync: 0
+};
+
 function getSyncConfig() {
   try {
     const raw = localStorage.getItem(SYNC_KEY);
-    if (!raw) return null;
-    const c = JSON.parse(raw);
-    if (c && c.url && c.anonKey && c.syncId && c.passphrase) return c;
-    return null;
+    if (raw) {
+      const c = JSON.parse(raw);
+      if (c && c.url && c.anonKey && c.syncId && c.passphrase) return c;
+    }
   } catch (e) {
-    return null;
   }
+  return Object.assign({}, BUILTIN_SYNC);
 }
 
 function saveSyncConfig(cfg) {

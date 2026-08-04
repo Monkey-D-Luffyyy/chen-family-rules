@@ -12,14 +12,14 @@
 
 直接用浏览器打开 `陈氏家法.html` 即可，数据保存在浏览器本地（localStorage）。建议定期点击页面里的 **备份数据** 按钮导出 JSON。
 
-## 云端同步（Supabase 免费版）
+## 云端同步（已内置，无需配置）
 
-数据会在浏览器端用“同步口令”加密（AES-256-GCM）后再上传，云端只存密文，看不到明文。
+云端连接已写死在网页里（Supabase 免费项目），两台设备**打开同一个网址即可自动同步**，不需要任何设置。数据会先在浏览器端加密再上传，云端只存密文。
 
-### 一次性配置步骤（约 10 分钟）
+### 一次性初始化（只需在 Supabase 后台执行一次 SQL）
 
-1. 打开 <https://supabase.com> 注册账号并创建一个免费项目。
-2. 进入项目，打开左侧 **SQL Editor**，执行：
+1. 登录 <https://supabase.com/dashboard>，进入项目。
+2. 左侧菜单打开 **SQL Editor** → **New query**，粘贴并 **Run**：
 
 ```sql
 create table if not exists public.family_data (
@@ -31,15 +31,9 @@ create table if not exists public.family_data (
 alter table public.family_data disable row level security;
 ```
 
-3. 进入 **Project Settings → API**，复制 **Project URL** 和 **anon public key**。
-4. 打开网页 → **云端同步 → 云同步设置**，填入：
-   - 项目地址：`https://xxxx.supabase.co`
-   - 匿名密钥：`eyJ...`（anon key）
-   - 同步标识：两台设备填同一个，如 `chen-family-520`
-   - 同步口令：≥ 8 位，两台设备填同一个，用于加密，请记牢
-5. 点 **测试连接** 验证，再点 **保存并同步**。以后每次打开页面会自动双向同步。
+执行成功后，页面每次打开都会自动双向同步，无需再做任何配置。
 
-> 说明：免费项目 + 密文存储下禁用 RLS 是最简方案；若想更严谨，可改为启用 RLS 并配置匿名读写的策略。
+> 高级设置：网页“云端同步 → 高级设置”可查看/更换云端地址、密钥、同步标识和加密口令，一般用户无需改动。注意：由于网站是公开部署，内置口令在网页源码中可见，隐私主要依赖网址隐蔽性；如需更严密的保护，可在高级设置中自定义口令。
 
 ## 部署到 GitHub Pages
 
