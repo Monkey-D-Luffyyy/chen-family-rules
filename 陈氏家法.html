@@ -218,8 +218,8 @@
   .log-list { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
   .log-item {
     display: flex;
-    gap: 14px;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
     border: 1px solid var(--line);
     border-left: 4px solid var(--pink);
     border-radius: 12px;
@@ -231,6 +231,13 @@
     opacity: .82;
   }
   .log-item.done .log-main { text-decoration-color: var(--ink-soft); }
+  .log-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
   .log-date {
     flex: none;
     width: 62px;
@@ -244,12 +251,22 @@
   .log-item.done .log-date .d { color: #5f9b5d; }
   .log-date .m { font-size: 11px; color: var(--ink-soft); }
   .log-main { flex: 1; min-width: 0; }
-  .log-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .log-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
   .tag {
     font-size: 12px;
     border-radius: 999px;
     padding: 3px 10px;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   .tag.jia { background: var(--pink-bg); color: #c45b6e; }
   .tag.yi { background: var(--blue-bg); color: #4e87b8; }
@@ -265,7 +282,7 @@
     padding: 6px 10px;
     line-height: 1.55;
   }
-  .log-actions { flex: none; display: flex; flex-direction: column; gap: 6px; }
+  .log-actions { display: flex; gap: 6px; justify-content: flex-end; }
   .empty {
     text-align: center;
     color: var(--ink-soft);
@@ -368,21 +385,43 @@
   .check-card {
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 16px 14px;
+    padding: 14px 12px;
     text-align: center;
-    cursor: pointer;
     transition: all .15s ease;
     background: #fffdfa;
-    user-select: none;
   }
-  .check-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-  .check-card .emoji { font-size: 26px; }
-  .check-card .q { font-size: 13px; margin-top: 8px; line-height: 1.5; color: var(--ink-soft); }
-  .check-card.on {
-    background: var(--green-bg);
-    border-color: #b8dbb3;
+  .check-card .emoji { font-size: 24px; }
+  .check-card .q { font-size: 13px; margin-top: 6px; line-height: 1.5; color: var(--ink); }
+  .q-ans { display: flex; gap: 8px; margin-top: 10px; }
+  .ans-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid var(--line);
+    background: #fffdf9;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink-soft);
+    transition: all .15s ease;
+    touch-action: manipulation;
   }
-  .check-card.on .q { color: #4e7e4c; font-weight: 700; }
+  .ans-btn.on-ok { background: var(--green); border-color: var(--green); color: #fff; font-weight: 700; }
+  .ans-btn.on-bad { background: #e0786b; border-color: #e0786b; color: #fff; font-weight: 700; }
+  .q-detail { display: none; margin-top: 10px; }
+  .check-card.has-bad .q-detail { display: block; }
+  .q-detail input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    margin-top: 6px;
+    font-family: inherit;
+    background: #fffdf9;
+    outline: none;
+  }
+  .q-detail input:focus { border-color: var(--pink); }
   .daily-head {
     display: flex;
     align-items: center;
@@ -404,24 +443,57 @@
     margin-left: auto;
   }
   .daily-progress b { color: #5f9b5d; }
+  .daily-stats { display: flex; gap: 10px; margin-top: 16px; }
+  .d-stat {
+    flex: 1;
+    background: var(--green-bg);
+    border: 1px solid #d4e7d0;
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .d-stat b { font-size: 24px; color: #5f9b5d; display: block; line-height: 1.2; }
+  .d-stat span { font-size: 12px; color: var(--ink-soft); }
+  .calendar {
+    margin-top: 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: #fffdfa;
+  }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cal-head span { font-size: 14px; font-weight: 700; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-dow { font-size: 11px; color: var(--ink-soft); text-align: center; padding: 2px 0; }
+  .cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 8px;
+    color: var(--ink-soft);
+  }
+  .cal-cell.checked { background: var(--green-bg); color: #4e7e4c; font-weight: 700; }
+  .cal-cell.today { outline: 2px solid var(--green); outline-offset: -1px; }
+  .cal-cell.other { visibility: hidden; }
   .daily-history {
     margin-top: 16px;
     border-top: 1px dashed var(--line);
-    padding-top: 12px;
+    padding-top: 14px;
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
   }
-  .daily-history .dh {
-    font-size: 11px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 4px 8px;
-    color: var(--ink-soft);
-    background: #fffdfa;
-  }
-  .daily-history .dh b { color: #5f9b5d; }
-  .daily-history .dh.zero b { color: #c45b6e; }
+  .dh-item { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fffdfa; }
+  .dh-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 6px; }
+  .dh-head b { color: var(--ink); }
+  .dh-head span { font-size: 11px; color: var(--ink-soft); }
+  .dh-line { font-size: 12px; color: var(--ink-soft); line-height: 1.7; }
+  .dh-line.ok { color: #4e7e4c; }
+  .dh-line.bad { color: #c45b6e; }
+  .dh-notes { font-size: 12px; color: var(--ink-soft); line-height: 1.6; margin-top: 2px; }
+  .dh-notes b { color: var(--ink); }
 
   /* ---------- Modal ---------- */
   .modal-mask {
@@ -666,9 +738,54 @@
       <span class="daily-progress">今日已完成 <b id="dailyDone">0</b> / 3</span>
     </div>
     <div class="daily-check">
-      <div class="check-card" data-q="q1"><div class="emoji">😢</div><div class="q">有没有让老婆不开心</div></div>
-      <div class="check-card" data-q="q2"><div class="emoji">😡</div><div class="q">有没有让老婆生气</div></div>
-      <div class="check-card" data-q="q3"><div class="emoji">😭</div><div class="q">有没有让老婆哭</div></div>
+      <div class="check-card" data-q="q1">
+        <div class="emoji">😢</div>
+        <div class="q">有没有让老婆不开心</div>
+        <div class="q-ans">
+          <button type="button" class="ans-btn" data-ans="ok">没有 ✓</button>
+          <button type="button" class="ans-btn" data-ans="bad">有 ✗</button>
+        </div>
+        <div class="q-detail">
+          <input type="text" class="q-why" placeholder="什么原因？">
+          <input type="text" class="q-next" placeholder="下次怎么做？">
+        </div>
+      </div>
+      <div class="check-card" data-q="q2">
+        <div class="emoji">😡</div>
+        <div class="q">有没有让老婆生气</div>
+        <div class="q-ans">
+          <button type="button" class="ans-btn" data-ans="ok">没有 ✓</button>
+          <button type="button" class="ans-btn" data-ans="bad">有 ✗</button>
+        </div>
+        <div class="q-detail">
+          <input type="text" class="q-why" placeholder="什么原因？">
+          <input type="text" class="q-next" placeholder="下次怎么做？">
+        </div>
+      </div>
+      <div class="check-card" data-q="q3">
+        <div class="emoji">😭</div>
+        <div class="q">有没有让老婆哭</div>
+        <div class="q-ans">
+          <button type="button" class="ans-btn" data-ans="ok">没有 ✓</button>
+          <button type="button" class="ans-btn" data-ans="bad">有 ✗</button>
+        </div>
+        <div class="q-detail">
+          <input type="text" class="q-why" placeholder="什么原因？">
+          <input type="text" class="q-next" placeholder="下次怎么做？">
+        </div>
+      </div>
+    </div>
+    <div class="daily-stats">
+      <div class="d-stat"><b id="streak">0</b><span>连续打卡（天）</span></div>
+      <div class="d-stat"><b id="monthCount">0</b><span>本月打卡（天）</span></div>
+    </div>
+    <div class="calendar">
+      <div class="cal-head">
+        <button class="btn mini" id="calPrev">‹ 上月</button>
+        <span id="calTitle"></span>
+        <button class="btn mini" id="calNext">下月 ›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
     </div>
     <div class="daily-history" id="dailyHistory"></div>
   </section>
@@ -772,6 +889,13 @@
 
 const STORAGE_KEY = "chen-family-rules-v1";
 
+const QUESTIONS = ["q1", "q2", "q3"];
+const QUESTION_META = {
+  q1: { emoji: "😢", label: "有没有让老婆不开心" },
+  q2: { emoji: "😡", label: "有没有让老婆生气" },
+  q3: { emoji: "😭", label: "有没有让老婆哭" }
+};
+
 const DEFAULT_ARTICLES = [
   { id: "a1", text: "第一条、不允许欺骗双方，真诚至上。", penalty: "\\" },
   { id: "a2", text: "第二条、双方矛盾需及时解决，禁止生隔夜气。", penalty: "\\" },
@@ -798,6 +922,7 @@ let data = load();
 let culprit = "jia";
 let editingArticleId = null;
 let currentDailyDate = today();
+let dailyMonth = today().slice(0, 7);
 
 /* ---------- utils ---------- */
 function load() {
@@ -810,11 +935,38 @@ function load() {
       names: Object.assign({}, d.names, parsed.names || {}),
       articles: Array.isArray(parsed.articles) && parsed.articles.length ? parsed.articles : d.articles,
       mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
-      daily: parsed.daily && typeof parsed.daily === "object" ? parsed.daily : {}
+      daily: normalizeDaily(parsed.daily)
     };
   } catch (e) {
     return defaultData();
   }
+}
+
+function normalizeRec(rec) {
+  const out = {};
+  QUESTIONS.forEach(q => {
+    const v = rec ? rec[q] : null;
+    out[q] = v && typeof v === "object" ? {
+      r: v.r || null,
+      why: v.why || "",
+      next: v.next || ""
+    } : {
+      r: v ? "bad" : null,
+      why: "",
+      next: ""
+    };
+  });
+  return out;
+}
+
+function normalizeDaily(daily) {
+  const out = {};
+  Object.keys(daily || {}).forEach(k => {
+    const rec = normalizeRec(daily[k]);
+    rec.updatedAt = (daily[k] && daily[k].updatedAt) || 0;
+    out[k] = rec;
+  });
+  return out;
 }
 
 function save() {
@@ -931,16 +1083,16 @@ function renderMistakes() {
     const dMon = d.length === 3 ? parseInt(d[1], 10) + "月" : "";
     return `
       <div class="log-item ${m.status === "done" ? "done" : ""}">
-        <div class="log-date"><div class="d">${dDay}</div><div class="m">${dMon}</div></div>
-        <div class="log-main">
+        <div class="log-head">
+          <div class="log-date"><div class="d">${dDay}</div><div class="m">${dMon}</div></div>
           <div class="log-tags">
             <span class="tag ${m.culprit}">${esc(nameOf(m.culprit))} 犯错</span>
             ${m.articleId ? '<span class="tag article">' + esc(articleLabel(m.articleId)) + '</span>' : '<span class="tag other">其他</span>'}
             ${m.status === "done" ? '<span class="tag" style="background:var(--green-bg);color:#5f9b5d">已履行</span>' : '<span class="tag" style="background:#fdf1e3;color:#b8862d">待履行</span>'}
           </div>
-          ${m.note ? '<div class="log-note">' + esc(m.note) + '</div>' : ""}
-          ${m.penalty && m.penalty !== "\\" ? '<div class="log-penalty">⚖ 惩罚：' + esc(m.penalty) + '</div>' : ""}
         </div>
+        ${m.note ? '<div class="log-note">' + esc(m.note) + '</div>' : ""}
+        ${m.penalty && m.penalty !== "\\" ? '<div class="log-penalty">⚖ 惩罚：' + esc(m.penalty) + '</div>' : ""}
         <div class="log-actions">
           <button class="btn mini ${m.status === "done" ? "ghost" : "green"}" data-act="toggle" data-id="${esc(m.id)}">${m.status === "done" ? "撤销" : "标记已履行"}</button>
           <button class="btn mini danger" data-act="del" data-id="${esc(m.id)}">删除</button>
@@ -951,24 +1103,100 @@ function renderMistakes() {
 }
 
 function renderDaily() {
-  const rec = (data.daily[currentDailyDate] || {});
+  const rec = normalizeRec(data.daily[currentDailyDate]);
   let done = 0;
-  ["q1", "q2", "q3"].forEach(q => { if (rec[q]) done++; });
-  document.getElementById("dailyDone").textContent = done;
-  document.querySelectorAll(".check-card").forEach(el => {
-    el.classList.toggle("on", !!rec[el.dataset.q]);
+  QUESTIONS.forEach(q => {
+    if (rec[q].r) done++;
+    const card = document.querySelector('.check-card[data-q="' + q + '"]');
+    if (!card) return;
+    card.querySelector('[data-ans="ok"]').classList.toggle("on-ok", rec[q].r === "ok");
+    card.querySelector('[data-ans="bad"]').classList.toggle("on-bad", rec[q].r === "bad");
+    card.classList.toggle("has-bad", rec[q].r === "bad");
+    card.querySelector(".q-why").value = rec[q].why;
+    card.querySelector(".q-next").value = rec[q].next;
   });
+  document.getElementById("dailyDone").textContent = done;
   document.getElementById("dailyDate").value = currentDailyDate;
+  document.getElementById("streak").textContent = streakDays();
+  document.getElementById("monthCount").textContent = monthCheckedCount(dailyMonth);
+  renderCalendar();
+  renderDailyHistory();
+}
 
-  const hist = Object.keys(data.daily)
+function isCheckedDay(rec) {
+  if (!rec) return false;
+  return QUESTIONS.some(q => rec[q] && rec[q].r);
+}
+
+function dateKey(dt) {
+  return dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0");
+}
+
+function streakDays() {
+  let streak = 0;
+  const d = new Date();
+  let cur = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  if (!isCheckedDay(data.daily[dateKey(cur)])) cur.setDate(cur.getDate() - 1);
+  while (isCheckedDay(data.daily[dateKey(cur)])) {
+    streak++;
+    cur.setDate(cur.getDate() - 1);
+  }
+  return streak;
+}
+
+function monthCheckedCount(month) {
+  let n = 0;
+  Object.keys(data.daily).forEach(k => {
+    if (k.indexOf(month) === 0 && isCheckedDay(data.daily[k])) n++;
+  });
+  return n;
+}
+
+function renderCalendar() {
+  const p = dailyMonth.split("-");
+  const y = parseInt(p[0], 10);
+  const m = parseInt(p[1], 10);
+  const daysInMonth = new Date(y, m, 0).getDate();
+  let dowFirst = new Date(y, m - 1, 1).getDay();
+  dowFirst = (dowFirst + 6) % 7;
+  let html = '<div class="cal-dow">一</div><div class="cal-dow">二</div><div class="cal-dow">三</div><div class="cal-dow">四</div><div class="cal-dow">五</div><div class="cal-dow">六</div><div class="cal-dow">日</div>';
+  for (let i = 0; i < dowFirst; i++) html += '<div class="cal-cell other"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+    const checked = isCheckedDay(data.daily[key]);
+    const isToday = key === today();
+    html += '<div class="cal-cell' + (checked ? " checked" : "") + (isToday ? " today" : "") + '">' + d + "</div>";
+  }
+  document.getElementById("calGrid").innerHTML = html;
+  document.getElementById("calTitle").textContent = y + "年" + m + "月";
+}
+
+function renderDailyHistory() {
+  const dates = Object.keys(data.daily)
+    .filter(k => isCheckedDay(data.daily[k]))
     .sort((a, b) => b.localeCompare(a))
-    .slice(0, 14)
-    .map(k => {
-      const r = data.daily[k];
-      const n = ["q1", "q2", "q3"].filter(q => r[q]).length;
-      return `<span class="dh ${n === 0 ? "zero" : ""}">${esc(fmtDate(k))} <b>${n}/3</b></span>`;
+    .slice(0, 14);
+  const box = document.getElementById("dailyHistory");
+  if (!dates.length) {
+    box.innerHTML = '<div class="empty">还没有打卡记录，从今天开始吧 🌱</div>';
+    return;
+  }
+  box.innerHTML = dates.map(k => {
+    const rec = normalizeRec(data.daily[k]);
+    const answered = QUESTIONS.filter(q => rec[q].r);
+    const lines = answered.map(q => {
+      const good = rec[q].r === "ok";
+      const meta = QUESTION_META[q];
+      let note = "";
+      if (rec[q].why || rec[q].next) {
+        const why = rec[q].why ? "原因：" + esc(rec[q].why) : "";
+        const next = rec[q].next ? "下次：" + esc(rec[q].next) : "";
+        note = '<div class="dh-notes">' + why + (why && next ? " ｜ " : "") + next + "</div>";
+      }
+      return '<div class="dh-line ' + (good ? "ok" : "bad") + '">' + meta.emoji + " " + meta.label + "：" + (good ? "没有 ✓" : "有 ✗") + "</div>" + note;
     }).join("");
-  document.getElementById("dailyHistory").innerHTML = hist || '<span style="font-size:12px;color:var(--ink-soft)">还没有打卡记录</span>';
+    return '<div class="dh-item"><div class="dh-head"><b>' + esc(fmtDate(k)) + "</b><span>" + answered.length + "/3</span></div>" + lines + "</div>";
+  }).join("");
 }
 
 function renderNames() {
@@ -1093,16 +1321,50 @@ document.getElementById("articleModal").addEventListener("click", e => {
 /* daily */
 document.getElementById("dailyDate").addEventListener("change", e => {
   currentDailyDate = e.target.value || today();
+  dailyMonth = currentDailyDate.slice(0, 7);
   renderDaily();
 });
-document.querySelectorAll(".check-card").forEach(el => {
-  el.addEventListener("click", () => {
-    const q = el.dataset.q;
-    if (!data.daily[currentDailyDate]) data.daily[currentDailyDate] = {};
-    data.daily[currentDailyDate][q] = !data.daily[currentDailyDate][q];
-    save();
-    renderDaily();
-  });
+
+document.querySelector(".daily-check").addEventListener("click", e => {
+  const btn = e.target.closest(".ans-btn");
+  if (!btn) return;
+  const card = btn.closest(".check-card");
+  const q = card.dataset.q;
+  const ans = btn.dataset.ans;
+  if (!data.daily[currentDailyDate]) data.daily[currentDailyDate] = {};
+  const rec = normalizeRec(data.daily[currentDailyDate]);
+  rec[q].r = rec[q].r === ans ? null : ans;
+  rec.updatedAt = Date.now();
+  data.daily[currentDailyDate] = rec;
+  save();
+  renderDaily();
+});
+
+document.querySelector(".daily-check").addEventListener("input", e => {
+  const t = e.target;
+  if (!t.classList.contains("q-why") && !t.classList.contains("q-next")) return;
+  const card = t.closest(".check-card");
+  const q = card.dataset.q;
+  if (!data.daily[currentDailyDate]) data.daily[currentDailyDate] = {};
+  const rec = normalizeRec(data.daily[currentDailyDate]);
+  if (t.classList.contains("q-why")) rec[q].why = t.value;
+  else rec[q].next = t.value;
+  rec.updatedAt = Date.now();
+  data.daily[currentDailyDate] = rec;
+  save();
+});
+
+document.getElementById("calPrev").addEventListener("click", () => {
+  const p = dailyMonth.split("-");
+  const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 2, 1);
+  dailyMonth = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  renderDaily();
+});
+document.getElementById("calNext").addEventListener("click", () => {
+  const p = dailyMonth.split("-");
+  const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10), 1);
+  dailyMonth = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  renderDaily();
 });
 
 /* settings */
@@ -1268,6 +1530,20 @@ async function decryptPayload(payload, passphrase) {
   }
 }
 
+function mergeDaily(A, B) {
+  const out = {};
+  QUESTIONS.forEach(q => {
+    const x = A && A[q] && typeof A[q] === "object" ? A[q] : {};
+    const y = B && B[q] && typeof B[q] === "object" ? B[q] : {};
+    out[q] = {
+      r: x.r || y.r || null,
+      why: x.why || y.why || "",
+      next: x.next || y.next || ""
+    };
+  });
+  return out;
+}
+
 function mergeData(a, b) {
   const out = {};
   out.names = (b.updatedAt || 0) > (a.updatedAt || 0) ? Object.assign({}, b.names || {}) : Object.assign({}, a.names || {});
@@ -1286,7 +1562,7 @@ function mergeData(a, b) {
   const dates = new Set([...Object.keys(a.daily || {}), ...Object.keys(b.daily || {})]);
   out.daily = {};
   dates.forEach(d => {
-    out.daily[d] = Object.assign({}, (a.daily || {})[d], (b.daily || {})[d]);
+    out.daily[d] = mergeDaily((a.daily || {})[d], (b.daily || {})[d]);
   });
   out.updatedAt = Math.max(a.updatedAt || 0, b.updatedAt || 0, Date.now());
   return out;
@@ -1465,11 +1741,7 @@ document.getElementById("btnPull").addEventListener("click", handlePull);
 /* init */
 document.getElementById("mDate").value = today();
 render();
-if (getSyncConfig()) {
-  setTimeout(() => { syncNow(); }, 1200);
-} else {
-  setSyncStatus("未连接云端：点击上方“云同步设置”，两台设备用同一标识和口令即可互相同步", "");
-}
+setTimeout(() => { syncNow(); }, 1200);
 
 /* expose for testing */
 window.__chenFamily = { mergeData, encryptPayload, decryptPayload, getSyncConfig, pushToCloud, pullFromCloud, syncNow };
