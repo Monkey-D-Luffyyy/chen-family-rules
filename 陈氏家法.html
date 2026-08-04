@@ -808,7 +808,7 @@
     </div>
   </section>
 
-  <div class="foot">陈氏家法 · 数据保存在本浏览器中 · 记得定期备份 ❤</div>
+  <div class="foot">陈氏家法 · 版本 <span id="appVersion"></span> · 数据保存在本浏览器并同步云端 · 记得定期备份 ❤</div>
 </div>
 
 <!-- Article modal -->
@@ -885,6 +885,7 @@
 "use strict";
 
 const STORAGE_KEY = "chen-family-rules-v1";
+const APP_VERSION = "20260804.3";
 
 const QUESTIONS = ["q1", "q2", "q3"];
 const QUESTION_META = {
@@ -1644,7 +1645,7 @@ async function syncNow() {
         await pushToCloud();
       }
       const now = new Date();
-      setSyncStatus("已同步 ✓ 上次同步 " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + "（云端数据已加密）", "ok");
+      setSyncStatus("已同步 ✓ 本地记录 " + (data.mistakes || []).length + " 条 · 上次同步 " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0"), "ok");
       render();
       return { ok: true };
     } catch (e) {
@@ -1755,6 +1756,7 @@ document.getElementById("btnPull").addEventListener("click", handlePull);
 
 /* init */
 document.getElementById("mDate").value = today();
+document.getElementById("appVersion").textContent = APP_VERSION;
 render();
 setTimeout(() => { syncNow(); }, 1200);
 setInterval(() => { syncNow(); }, 60000);
