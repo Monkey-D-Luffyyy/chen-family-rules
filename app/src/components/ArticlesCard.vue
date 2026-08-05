@@ -11,9 +11,9 @@
 
     <div v-if="!state.data.articles.length" class="empty">暂无条例，点击右上角“新增条例”开始立规矩～</div>
 
-    <div v-else class="article-list">
-      <div v-for="(a, i) in state.data.articles" :key="a.id" class="article">
-        <div class="no">{{ i + 1 }}</div>
+    <div v-if="paged.length" class="article-list">
+      <div v-for="a in paged" :key="a.id" class="article">
+        <div class="no">{{ articleIndex(a.id) }}</div>
         <div class="body">
           <div class="text">{{ a.text }}</div>
           <div class="penalty">
@@ -27,6 +27,17 @@
           <el-button size="small" type="danger" plain round @click="remove(a.id)">删除</el-button>
         </div>
       </div>
+    </div>
+
+    <div v-if="state.data.articles.length > pageSize" class="pager">
+      <el-pagination
+        v-model:current-page="page"
+        :page-size="pageSize"
+        :total="state.data.articles.length"
+        layout="prev, pager, next"
+        background
+        small
+      />
     </div>
 
     <el-dialog v-model="dialogVisible" :title="editing ? '编辑条例' : '新增条例'" width="520px" destroy-on-close>
@@ -47,14 +58,33 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
+import "element-plus/es/components/message/style/css";
+import "element-plus/es/components/message-box/style/css";
 import { state, addArticle, updateArticle, deleteArticle } from "../store";
 
 const dialogVisible = ref(false);
 const editing = ref(null);
 const formText = ref("");
 const formPenalty = ref("");
+
+const pageSize = 20;
+const page = ref(1);
+const paged = computed(() => {
+  const start = (page.value - 1) * pageSize;
+  return state.data.articles.slice(start, start + pageSize);
+});
+
+function articleIndex(id) {
+  return state.data.articles.findIndex(a => a.id === id) + 1;
+}
+
+watch(() => state.data.articles.length, () => {
+  const maxPage = Math.max(1, Math.ceil(state.data.articles.length / pageSize));
+  if (page.value > maxPage) page.value = maxPage;
+});
 
 function openAdd() {
   editing.value = null;
@@ -136,6 +166,11 @@ async function remove(id) {
 .plabel { font-weight: 700; margin-right: 4px; }
 .no-penalty { color: var(--ink-soft); }
 .ops { flex: none; display: flex; gap: 6px; }
+.pager {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
 
 @media (max-width: 720px) {
   .article { flex-wrap: wrap; }

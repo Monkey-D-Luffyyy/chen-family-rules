@@ -49,6 +49,8 @@
 <script setup>
 import { reactive } from "vue";
 import { ElMessage } from "element-plus";
+import { EditPen } from "@element-plus/icons-vue";
+import "element-plus/es/components/message/style/css";
 import { state, addMistake, today } from "../store";
 
 const form = reactive({

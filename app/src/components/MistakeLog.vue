@@ -9,8 +9,8 @@
 
     <div v-if="!sorted.length" class="empty">记录册空空如也，愿永不新增 🍀</div>
 
-    <div v-else class="log-list">
-      <div v-for="m in sorted" :key="m.id" class="log-item" :class="{ done: m.status === 'done' }">
+    <div v-if="paged.length" class="log-list">
+      <div v-for="m in paged" :key="m.id" class="log-item" :class="{ done: m.status === 'done' }">
         <div class="log-top">
           <span class="log-date">{{ shortDate(m.date) }}</span>
           <el-tag v-if="m.status === 'done'" size="small" type="success" effect="light" round>已履行</el-tag>
@@ -33,17 +33,41 @@
         </div>
       </div>
     </div>
+
+    <div v-if="sorted.length > pageSize" class="pager">
+      <el-pagination
+        v-model:current-page="page"
+        :page-size="pageSize"
+        :total="sorted.length"
+        layout="prev, pager, next"
+        background
+        small
+      />
+    </div>
   </section>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { ElMessageBox } from "element-plus";
+import "element-plus/es/components/message-box/style/css";
 import { state, toggleMistake, deleteMistake } from "../store";
 
 const sorted = computed(() =>
   [...state.data.mistakes].sort((x, y) => (y.date + y.createdAt).localeCompare(x.date + x.createdAt))
 );
+
+const pageSize = 10;
+const page = ref(1);
+const paged = computed(() => {
+  const start = (page.value - 1) * pageSize;
+  return sorted.value.slice(start, start + pageSize);
+});
+
+watch(sorted, () => {
+  const maxPage = Math.max(1, Math.ceil(sorted.value.length / pageSize));
+  if (page.value > maxPage) page.value = maxPage;
+});
 
 function shortDate(iso) {
   if (!iso) return "";
@@ -131,6 +155,11 @@ async function remove(id) {
   display: flex;
   gap: 6px;
   justify-content: flex-end;
+}
+.pager {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
 }
 
 @media (max-width: 720px) {

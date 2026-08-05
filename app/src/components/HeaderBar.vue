@@ -39,6 +39,9 @@
 <script setup>
 import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { Setting, Download, Upload, Delete } from "@element-plus/icons-vue";
+import "element-plus/es/components/message/style/css";
+import "element-plus/es/components/message-box/style/css";
 import { state, updateNames, resetData as resetStoreData, saveData } from "../store";
 
 const settingsVisible = ref(false);

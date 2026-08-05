@@ -68,12 +68,16 @@
           </div>
         </div>
       </div>
+      <el-button v-if="historyTotal > history.length" size="small" round @click="historyLimit += 14">
+        加载更多历史（还有 {{ historyTotal - history.length }} 条）
+      </el-button>
     </div>
   </section>
 </template>
 
 <script setup>
 import { computed, reactive, ref, watch } from "vue";
+import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 import { QUESTIONS, QUESTION_META, state, normalizeRec, setDailyAnswer, setDailyNote, today, dateKey, fmtDate } from "../store";
 
 const currentDate = ref(today());
@@ -159,11 +163,13 @@ function shiftMonth(delta) {
   monthKey.value = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
 }
 
+const historyLimit = ref(14);
+
 const history = computed(() => {
   return Object.keys(state.data.daily)
     .filter(k => isCheckedDay(state.data.daily[k]))
     .sort((a, b) => b.localeCompare(a))
-    .slice(0, 14)
+    .slice(0, historyLimit.value)
     .map(k => {
       const rec = normalizeRec(state.data.daily[k]);
       const answered = QUESTIONS.filter(q => rec[q].r);
@@ -182,6 +188,10 @@ const history = computed(() => {
       };
     });
 });
+
+const historyTotal = computed(() =>
+  Object.keys(state.data.daily).filter(k => isCheckedDay(state.data.daily[k])).length
+);
 </script>
 
 <style scoped>
