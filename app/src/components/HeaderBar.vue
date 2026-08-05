@@ -73,7 +73,14 @@ function importData(e) {
       const parsed = JSON.parse(reader.result);
       if (!parsed.articles || !Array.isArray(parsed.articles) || !parsed.mistakes) throw new Error("格式不正确");
       ElMessageBox.confirm("导入后将覆盖当前所有数据，确定继续吗？", "提示", { type: "warning" }).then(() => {
-        state.data = parsed;
+        state.data = {
+          names: parsed.names || { jia: "甲方", yi: "乙方" },
+          articles: parsed.articles,
+          mistakes: parsed.mistakes,
+          daily: parsed.daily || {},
+          deleted: Array.isArray(parsed.deleted) ? parsed.deleted : [],
+          updatedAt: Date.now()
+        };
         saveData();
         ElMessage.success("导入成功");
       }).catch(() => {});

@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { EditPen } from "@element-plus/icons-vue";
 import "element-plus/es/components/message/style/css";
@@ -59,6 +59,15 @@ const form = reactive({
   articleId: "__other__",
   note: "",
   penalty: ""
+});
+
+watch(() => form.articleId, id => {
+  const a = state.data.articles.find(x => x.id === id);
+  if (a && a.penalty && a.penalty !== "\\" && !form.penalty) {
+    form.penalty = a.penalty;
+  } else if (!a && !form.penalty) {
+    form.penalty = "";
+  }
 });
 
 function articleById(id) {

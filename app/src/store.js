@@ -36,6 +36,7 @@ function defaultData() {
     articles: DEFAULT_ARTICLES.map(a => ({ ...a })),
     mistakes: [],
     daily: {},
+    deleted: [],
     updatedAt: 0
   };
 }
@@ -80,6 +81,7 @@ export function loadData() {
       articles: Array.isArray(parsed.articles) && parsed.articles.length ? parsed.articles : d.articles,
       mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
       daily: normalizeDaily(parsed.daily),
+      deleted: Array.isArray(parsed.deleted) ? parsed.deleted : [],
       updatedAt: parsed.updatedAt || 0
     };
   } catch (e) {
@@ -151,6 +153,7 @@ export function toggleMistake(id) {
 }
 
 export function deleteMistake(id) {
+  addTombstone("m", id);
   state.data.mistakes = state.data.mistakes.filter(x => x.id !== id);
   saveData();
 }
@@ -170,13 +173,25 @@ export function updateArticle(id, text, penalty) {
 }
 
 export function deleteArticle(id) {
+  addTombstone("a", id);
   state.data.articles = state.data.articles.filter(a => a.id !== id);
   saveData();
+}
+
+function addTombstone(kind, id) {
+  state.data.deleted.push({ k: kind, id, at: Date.now() });
+  if (state.data.deleted.length > 300) {
+    state.data.deleted = state.data.deleted.slice(-300);
+  }
 }
 
 export function setDailyAnswer(date, q, ans) {
   const rec = normalizeRec(state.data.daily[date]);
   rec[q].r = rec[q].r === ans ? null : ans;
+  if (rec[q].r !== "bad") {
+    rec[q].why = "";
+    rec[q].next = "";
+  }
   rec.updatedAt = Date.now();
   state.data.daily[date] = rec;
   saveData();
@@ -252,7 +267,17 @@ export async function decryptPayload(payload, passphrase) {
 }
 
 export function getSyncConfig() {
-  return { ...BUILTIN_SYNC };
+  const cfg = { ...BUILTIN_SYNC };
+  try {
+    const p = new URLSearchParams(location.search);
+    if (p.get("syncId")) cfg.syncId = p.get("syncId");
+    if (p.get("passphrase")) cfg.passphrase = p.get("passphrase");
+    if (p.get("url")) cfg.url = p.get("url");
+    if (p.get("key")) cfg.anonKey = p.get("key");
+  } catch (e) {
+    // ignore
+  }
+  return cfg;
 }
 
 function mergeDaily(A, B) {
@@ -260,10 +285,11 @@ function mergeDaily(A, B) {
   QUESTIONS.forEach(q => {
     const x = A && A[q] && typeof A[q] === "object" ? A[q] : {};
     const y = B && B[q] && typeof B[q] === "object" ? B[q] : {};
+    const r = x.r || y.r || null;
     out[q] = {
-      r: x.r || y.r || null,
-      why: x.why || y.why || "",
-      next: x.next || y.next || ""
+      r,
+      why: r === "bad" ? (x.why || y.why || "") : "",
+      next: r === "bad" ? (x.next || y.next || "") : ""
     };
   });
   return out;
@@ -272,18 +298,26 @@ function mergeDaily(A, B) {
 export function mergeData(a, b) {
   const out = {};
   out.names = (b.updatedAt || 0) > (a.updatedAt || 0) ? { ...(b.names || {}) } : { ...(a.names || {}) };
+
+  const tmap = new Map();
+  [...(a.deleted || []), ...(b.deleted || [])].forEach(t => {
+    const cur = tmap.get(t.k + "|" + t.id);
+    if (!cur || (t.at || 0) > (cur.at || 0)) tmap.set(t.k + "|" + t.id, t);
+  });
+  out.deleted = [...tmap.values()].slice(-300);
+
   const amap = new Map();
   [...(a.articles || []), ...(b.articles || [])].forEach(ar => {
     const cur = amap.get(ar.id);
     if (!cur || (ar.updatedAt || 0) > (cur.updatedAt || 0)) amap.set(ar.id, ar);
   });
-  out.articles = [...amap.values()];
+  out.articles = [...amap.values()].filter(ar => !tmap.has("a|" + ar.id));
   const mmap = new Map();
   [...(a.mistakes || []), ...(b.mistakes || [])].forEach(m => {
     const cur = mmap.get(m.id);
     if (!cur || (m.updatedAt || 0) > (cur.updatedAt || 0)) mmap.set(m.id, m);
   });
-  out.mistakes = [...mmap.values()];
+  out.mistakes = [...mmap.values()].filter(m => !tmap.has("m|" + m.id));
   const dates = new Set([...Object.keys(a.daily || {}), ...Object.keys(b.daily || {})]);
   out.daily = {};
   dates.forEach(d => {
@@ -363,4 +397,16 @@ export async function syncNow() {
 }
 
 /* expose for testing */
-window.__chenFamily = { state, mergeData, encryptPayload, decryptPayload, getSyncConfig, pushToCloud, syncNow, saveData };
+window.__chenFamily = {
+  state,
+  mergeData,
+  encryptPayload,
+  decryptPayload,
+  getSyncConfig,
+  pushToCloud,
+  syncNow,
+  saveData,
+  deleteMistake,
+  deleteArticle,
+  setDailyAnswer
+};

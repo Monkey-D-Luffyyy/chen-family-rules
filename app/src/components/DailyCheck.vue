@@ -61,7 +61,7 @@
         </div>
         <div v-for="line in item.lines" :key="line.q" class="dh-line" :class="line.good ? 'ok' : 'bad'">
           {{ line.emoji }} {{ line.label }}：{{ line.good ? '没有 ✓' : '有 ✗' }}
-          <div v-if="line.why || line.next" class="dh-notes">
+          <div v-if="line.bad && (line.why || line.next)" class="dh-notes">
             <template v-if="line.why">原因：{{ line.why }}</template>
             <template v-if="line.why && line.next"> ｜ </template>
             <template v-if="line.next">下次：{{ line.next }}</template>
