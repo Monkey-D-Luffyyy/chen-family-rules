@@ -98,6 +98,11 @@ watch(currentDate, () => {
   reloadForm();
 });
 
+watch(
+  () => state.data.daily[currentDate.value],
+  () => reloadForm()
+);
+
 reloadForm();
 
 const doneCount = computed(() => QUESTIONS.filter(q => form[q].r).length);
@@ -220,6 +225,11 @@ const historyTotal = computed(() =>
   padding: 14px 12px;
   text-align: center;
   background: #fffdfa;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.check-card:hover {
+  border-color: #e0cfba;
+  box-shadow: 0 4px 14px rgba(122, 90, 60, .06);
 }
 .check-card .emoji { font-size: 24px; }
 .check-card .q {
@@ -234,6 +244,9 @@ const historyTotal = computed(() =>
 }
 .q-ans :deep(.el-radio-button) { flex: 1; }
 .q-ans :deep(.el-radio-button__inner) { width: 100%; }
+.q-ans :deep(.el-radio-button:first-child .el-radio-button__inner) { border-radius: 999px 0 0 999px; }
+.q-ans :deep(.el-radio-button:last-child .el-radio-button__inner) { border-radius: 0 999px 999px 0; }
+.q-ans :deep(.el-radio-button__inner) { border-color: var(--line); }
 .q-detail {
   display: none;
   margin-top: 10px;

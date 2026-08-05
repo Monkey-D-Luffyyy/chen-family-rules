@@ -1,14 +1,31 @@
 <template>
   <div class="stats">
-    <el-statistic title="累计犯错" :value="stats.total" class="pink" />
-    <el-statistic title="待履行惩罚" :value="stats.pending" class="blue" />
-    <el-statistic title="已履行惩罚" :value="stats.done" class="green" />
-    <el-statistic :title="'履行率'" :value="stats.rate" class="gold" />
+    <div class="stat pink">
+      <div class="stat-icon"><el-icon><Warning /></el-icon></div>
+      <div class="stat-num">{{ stats.total }}</div>
+      <div class="stat-label">累计犯错</div>
+    </div>
+    <div class="stat blue">
+      <div class="stat-icon"><el-icon><Clock /></el-icon></div>
+      <div class="stat-num">{{ stats.pending }}</div>
+      <div class="stat-label">待履行惩罚</div>
+    </div>
+    <div class="stat green">
+      <div class="stat-icon"><el-icon><CircleCheck /></el-icon></div>
+      <div class="stat-num">{{ stats.done }}</div>
+      <div class="stat-label">已履行惩罚</div>
+    </div>
+    <div class="stat gold">
+      <div class="stat-icon"><el-icon><Trophy /></el-icon></div>
+      <div class="stat-num">{{ stats.rate }}</div>
+      <div class="stat-label">履行率</div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
+import { Warning, Clock, CircleCheck, Trophy } from "@element-plus/icons-vue";
 import { state } from "../store";
 
 const stats = computed(() => {
@@ -31,31 +48,55 @@ const stats = computed(() => {
   gap: 14px;
   margin-top: 22px;
 }
-
-:deep(.el-statistic) {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px 10px;
+.stat {
+  border-radius: 18px;
+  padding: 18px 12px 14px;
   text-align: center;
+  border: 1px solid transparent;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-
-:deep(.el-statistic__head) {
-  color: var(--ink-soft);
-  font-size: 12px;
-  margin-bottom: 6px;
+.stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(122, 90, 60, .1);
 }
+.stat.pink { background: var(--pink-bg); border-color: #f8d9df; }
+.stat.blue { background: var(--blue-bg); border-color: #d8e7f6; }
+.stat.green { background: var(--green-bg); border-color: #d9e9d6; }
+.stat.gold { background: #fdf3e0; border-color: #f3e2bd; }
 
-:deep(.el-statistic__content) {
-  font-size: 28px;
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: rgba(255, 255, 255, .75);
+  box-shadow: 0 2px 8px rgba(122, 90, 60, .08);
+}
+.stat.pink .stat-icon { color: #d46b7e; }
+.stat.blue .stat-icon { color: #4e87b8; }
+.stat.green .stat-icon { color: #5f9b5d; }
+.stat.gold .stat-icon { color: #b8862d; }
+
+.stat-num {
+  font-size: 26px;
   font-weight: 800;
+  line-height: 1.2;
 }
+.stat.pink .stat-num { color: #d46b7e; }
+.stat.blue .stat-num { color: #4e87b8; }
+.stat.green .stat-num { color: #5f9b5d; }
+.stat.gold .stat-num { color: #b8862d; }
 
-:deep(.pink .el-statistic__content) { color: #d46b7e; }
-:deep(.blue .el-statistic__content) { color: #4e87b8; }
-:deep(.green .el-statistic__content) { color: #5f9b5d; }
-:deep(.gold .el-statistic__content) { color: #b8862d; }
+.stat-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
 
 @media (max-width: 720px) {
   .stats {
@@ -63,6 +104,7 @@ const stats = computed(() => {
     gap: 10px;
     margin-top: 14px;
   }
-  :deep(.el-statistic) { padding: 12px 6px; }
+  .stat { padding: 14px 8px 12px; }
+  .stat-num { font-size: 22px; }
 }
 </style>

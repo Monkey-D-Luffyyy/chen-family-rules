@@ -22,11 +22,14 @@
   --el-color-primary-light-8: #fae4e8;
   --el-color-primary-light-9: #fdf0f2;
   --el-color-primary-dark-2: #c96f80;
-  --el-border-radius-base: 10px;
+  --el-border-radius-base: 12px;
+  --el-border-radius-small: 10px;
+  --el-border-radius-round: 999px;
   --el-font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -49,10 +52,11 @@ body {
 .card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px 26px;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(122, 90, 60, .07);
+  padding: 26px 28px;
   margin-top: 22px;
+  transition: box-shadow .2s ease, transform .2s ease;
 }
 
 .sec-title {
@@ -74,6 +78,67 @@ body {
 
 .sec-title .spacer { flex: 1; }
 
+/* ---------- Element Plus global polish ---------- */
+.el-button {
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.el-button--primary {
+  background: linear-gradient(135deg, #f2a7b3, #e88093);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(232, 139, 157, .28);
+}
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background: linear-gradient(135deg, #f6b6c0, #ec8fa1);
+  border-color: transparent;
+}
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: 10px;
+  background: #fffdf9;
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+.el-input__wrapper:hover,
+.el-select__wrapper:hover,
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1px #e5d5c2 inset;
+}
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+}
+.el-dialog {
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(74, 59, 50, .18);
+}
+.el-dialog__title {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.el-radio-button__inner {
+  border-radius: 0;
+}
+.el-tag {
+  border-radius: 999px;
+}
+.el-pagination.is-background .el-pager li,
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next {
+  border-radius: 8px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card { animation: fadeUp .3s ease both; }
+.card:nth-child(2) { animation-delay: .03s; }
+.card:nth-child(3) { animation-delay: .06s; }
+.card:nth-child(4) { animation-delay: .09s; }
+
 @media (max-width: 720px) {
   body {
     padding: 14px 10px calc(40px + env(safe-area-inset-bottom));
@@ -81,7 +146,11 @@ body {
   .card {
     padding: 18px 14px;
     margin-top: 14px;
-    border-radius: 16px;
+    border-radius: 18px;
   }
   .sec-title { font-size: 17px; }
+  .el-dialog {
+    width: calc(100vw - 32px) !important;
+    margin-top: 6vh !important;
+  }
 }

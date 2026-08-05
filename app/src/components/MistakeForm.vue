@@ -63,17 +63,17 @@ const form = reactive({
 
 watch(() => form.articleId, id => {
   const a = state.data.articles.find(x => x.id === id);
-  if (a && a.penalty && a.penalty !== "\\" && !form.penalty) {
+  if (a && a.penalty && a.penalty !== "\\") {
     form.penalty = a.penalty;
-  } else if (!a && !form.penalty) {
+  } else {
     form.penalty = "";
   }
 });
 
 function submit() {
   const articleId = form.articleId === "__other__" ? null : form.articleId;
-  if (!form.note.trim() && !form.penalty.trim()) {
-    ElMessage.warning("请填写具体经过或惩罚措施～");
+  if (!form.note.trim()) {
+    ElMessage.warning("请填写具体经过～");
     return;
   }
   addMistake({

@@ -116,6 +116,10 @@ async function remove(id) {
   border-radius: 12px;
   padding: 14px 16px;
   background: #fffdfa;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.log-item:hover {
+  box-shadow: 0 6px 16px rgba(122, 90, 60, .08);
 }
 .log-item.done { border-left-color: var(--green); opacity: .82; }
 .log-top {

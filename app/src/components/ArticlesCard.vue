@@ -138,6 +138,10 @@ async function remove(id) {
   background: #fffdfa;
   display: flex;
   gap: 14px;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.article:hover {
+  box-shadow: 0 6px 16px rgba(122, 90, 60, .08);
 }
 .no {
   flex: none;
