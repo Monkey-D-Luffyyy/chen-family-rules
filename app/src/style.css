@@ -1,0 +1,87 @@
+:root {
+  --bg: #faf5ec;
+  --card: #ffffff;
+  --ink: #4a3b32;
+  --ink-soft: #8a7668;
+  --pink: #f2a7b3;
+  --pink-bg: #fdeef1;
+  --blue: #8fb8de;
+  --blue-bg: #eef4fb;
+  --green: #9cc79a;
+  --green-bg: #eef7ec;
+  --purple: #9b6bb8;
+  --purple-bg: #f6effa;
+  --gold: #d9a441;
+  --line: #eee2d3;
+  --radius: 18px;
+  --shadow: 0 4px 18px rgba(122, 90, 60, .08);
+  --el-color-primary: #e88b9d;
+  --el-color-primary-light-3: #eea9b6;
+  --el-color-primary-light-5: #f3c1cb;
+  --el-color-primary-light-7: #f8d9df;
+  --el-color-primary-light-8: #fae4e8;
+  --el-color-primary-light-9: #fdf0f2;
+  --el-color-primary-dark-2: #c96f80;
+  --el-border-radius-base: 10px;
+  --el-font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(242, 167, 179, .14), transparent 32%),
+    radial-gradient(circle at 85% 20%, rgba(143, 184, 222, .14), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(156, 199, 154, .12), transparent 36%),
+    var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 28px 16px calc(40px + env(safe-area-inset-bottom));
+}
+
+#app {
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px 26px;
+  margin-top: 22px;
+}
+
+.sec-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.sec-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.sec-title .spacer { flex: 1; }
+
+@media (max-width: 720px) {
+  body {
+    padding: 14px 10px calc(40px + env(safe-area-inset-bottom));
+  }
+  .card {
+    padding: 18px 14px;
+    margin-top: 14px;
+    border-radius: 16px;
+  }
+  .sec-title { font-size: 17px; }
+}
