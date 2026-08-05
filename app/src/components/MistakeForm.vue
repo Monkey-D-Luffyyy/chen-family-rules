@@ -99,6 +99,18 @@ function submit() {
 .culprit-group { width: 100%; display: flex; }
 .culprit-group :deep(.el-radio-button) { flex: 1; }
 .culprit-group :deep(.el-radio-button__inner) { width: 100%; }
+.culprit-group :deep(.el-radio-button:first-child) {
+  --el-radio-button-checked-bg-color: #c96f80;
+  --el-radio-button-checked-border-color: #c96f80;
+  --el-radio-button-checked-hover-bg-color: #d88090;
+  --el-radio-button-checked-hover-border-color: #d88090;
+}
+.culprit-group :deep(.el-radio-button:last-child) {
+  --el-radio-button-checked-bg-color: #6d9fd0;
+  --el-radio-button-checked-border-color: #6d9fd0;
+  --el-radio-button-checked-hover-bg-color: #82afd8;
+  --el-radio-button-checked-hover-border-color: #82afd8;
+}
 .form-foot {
   display: flex;
   justify-content: space-between;

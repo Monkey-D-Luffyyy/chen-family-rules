@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 
 export const STORAGE_KEY = "chen-family-rules-v1";
-export const APP_VERSION = "20260805.1";
+export const APP_VERSION = "20260805.2";
 
 const BUILTIN_SYNC = {
   url: "https://fzgrxauidtcjxvpyvnjn.supabase.co",
@@ -212,7 +212,17 @@ export function updateNames(jia, yi) {
 }
 
 export function resetData() {
+  const tombstones = [];
+  const now = Date.now();
+  (state.data.mistakes || []).forEach(m => tombstones.push({ k: "m", id: m.id, at: now }));
+  Object.keys(state.data.daily || {}).forEach(d => tombstones.push({ k: "d", id: d, at: now }));
+  const defaultIds = new Set(DEFAULT_ARTICLES.map(a => a.id));
+  (state.data.articles || []).forEach(a => {
+    if (!defaultIds.has(a.id)) tombstones.push({ k: "a", id: a.id, at: now });
+  });
   state.data = defaultData();
+  state.data.deleted = tombstones.slice(-300);
+  state.data.articles.forEach(a => { a.updatedAt = now; });
   saveData();
 }
 
@@ -281,7 +291,9 @@ export function getSyncConfig() {
 }
 
 function mergeDaily(A, B) {
-  const out = {};
+  const out = {
+    updatedAt: Math.max((A && A.updatedAt) || 0, (B && B.updatedAt) || 0)
+  };
   QUESTIONS.forEach(q => {
     const x = A && A[q] && typeof A[q] === "object" ? A[q] : {};
     const y = B && B[q] && typeof B[q] === "object" ? B[q] : {};
@@ -321,6 +333,7 @@ export function mergeData(a, b) {
   const dates = new Set([...Object.keys(a.daily || {}), ...Object.keys(b.daily || {})]);
   out.daily = {};
   dates.forEach(d => {
+    if (tmap.has("d|" + d)) return;
     out.daily[d] = mergeDaily((a.daily || {})[d], (b.daily || {})[d]);
   });
   out.updatedAt = Math.max(a.updatedAt || 0, b.updatedAt || 0, Date.now());
@@ -411,5 +424,6 @@ window.__chenFamily = {
   setDailyAnswer,
   addArticle,
   updateArticle,
-  setDailyNote
+  setDailyNote,
+  resetData
 };

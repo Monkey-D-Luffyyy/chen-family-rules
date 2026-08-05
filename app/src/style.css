@@ -178,6 +178,16 @@ html body .el-button--success.is-plain:focus {
 .el-radio-button__inner {
   border-radius: 0;
 }
+html body .el-radio-button {
+  --el-radio-button-checked-bg-color: #e88093;
+  --el-radio-button-checked-border-color: #e88093;
+  --el-radio-button-checked-text-color: #fff;
+  --el-radio-button-checked-hover-bg-color: #ec8fa1;
+  --el-radio-button-checked-hover-border-color: #ec8fa1;
+}
+html body .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  box-shadow: none;
+}
 .el-tag {
   border-radius: 999px;
 }
