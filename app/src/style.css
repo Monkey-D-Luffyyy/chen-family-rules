@@ -82,16 +82,73 @@ body {
 .el-button {
   font-weight: 500;
   letter-spacing: 1px;
+  border-radius: 999px;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-.el-button--primary {
+.el-button:not(.is-disabled):active {
+  transform: scale(.97);
+}
+.el-button:focus-visible {
+  outline: 2px solid #e88093;
+  outline-offset: 2px;
+}
+.el-button--default {
+  --el-button-border-color: #e3d3c0;
+  --el-button-hover-border-color: #d9c4ab;
+  --el-button-hover-bg-color: #fdf9f3;
+  --el-button-text-color: #4a3b32;
+}
+html body .el-button--primary {
+  --el-button-text-color: #fff;
+  --el-button-bg-color: #e88093;
+  --el-button-border-color: transparent;
+  --el-button-hover-text-color: #fff;
+  --el-button-hover-bg-color: #ec8fa1;
+  --el-button-hover-border-color: transparent;
+  --el-button-active-text-color: #fff;
   background: linear-gradient(135deg, #f2a7b3, #e88093);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(232, 139, 157, .32);
   border-color: transparent;
-  box-shadow: 0 4px 12px rgba(232, 139, 157, .28);
 }
-.el-button--primary:hover,
-.el-button--primary:focus {
+html body .el-button--primary:hover,
+html body .el-button--primary:focus {
   background: linear-gradient(135deg, #f6b6c0, #ec8fa1);
-  border-color: transparent;
+  color: #fff;
+}
+html body .el-button--primary.is-plain {
+  background: #fff;
+  border: 1px solid #e8a4b0;
+  color: #c96f80;
+  box-shadow: none;
+}
+html body .el-button--primary.is-plain:hover,
+html body .el-button--primary.is-plain:focus {
+  background: var(--el-color-primary-light-9);
+  border-color: #e88093;
+  color: #c96f80;
+}
+html body .el-button--danger.is-plain {
+  background: #fff;
+  border: 1px solid #e5a9a9;
+  color: #c94f4f;
+}
+html body .el-button--danger.is-plain:hover,
+html body .el-button--danger.is-plain:focus {
+  background: #fdf0f2;
+  border-color: #c94f4f;
+  color: #c94f4f;
+}
+html body .el-button--success.is-plain {
+  background: #fff;
+  border: 1px solid #a9cfa7;
+  color: #5f9b5d;
+}
+html body .el-button--success.is-plain:hover,
+html body .el-button--success.is-plain:focus {
+  background: var(--green-bg);
+  border-color: #5f9b5d;
+  color: #5f9b5d;
 }
 .el-input__wrapper,
 .el-select__wrapper,

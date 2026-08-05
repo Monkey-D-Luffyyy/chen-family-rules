@@ -39,7 +39,7 @@
       <div class="form-foot">
         <span class="hint">登记后可在下方列表中标记“已履行”</span>
         <el-button type="primary" round @click="submit">
-          <el-icon><EditPen /></el-icon>&nbsp;记录犯错
+          <el-icon><Plus /></el-icon>&nbsp;记录犯错
         </el-button>
       </div>
     </el-form>
@@ -49,7 +49,7 @@
 <script setup>
 import { reactive, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { EditPen } from "@element-plus/icons-vue";
+import { Plus } from "@element-plus/icons-vue";
 import "element-plus/es/components/message/style/css";
 import { state, addMistake, today } from "../store";
 
@@ -106,7 +106,14 @@ function submit() {
   gap: 10px;
   flex-wrap: wrap;
 }
-.hint { font-size: 12px; color: var(--ink-soft); }
+.hint {
+  font-size: 12px;
+  color: #7a6a5c;
+  background: #fbf5ec;
+  border: 1px solid #f0e4d3;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
 
 @media (max-width: 720px) {
   .form-row { grid-template-columns: 1fr; }

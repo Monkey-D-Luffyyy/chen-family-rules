@@ -109,7 +109,6 @@ const doneCount = computed(() => QUESTIONS.filter(q => form[q].r).length);
 
 function answer(q, ans) {
   setDailyAnswer(currentDate.value, q, ans);
-  reloadForm();
 }
 
 function note(q, field, value) {

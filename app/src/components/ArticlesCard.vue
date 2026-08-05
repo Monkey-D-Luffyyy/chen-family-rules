@@ -4,7 +4,7 @@
       <span class="dot" style="background:var(--blue)"></span>
       共同纲领
       <span class="spacer"></span>
-      <el-button type="primary" plain size="small" round @click="openAdd">
+      <el-button type="primary" size="small" round @click="openAdd">
         <el-icon><Plus /></el-icon>&nbsp;新增条例
       </el-button>
     </div>
