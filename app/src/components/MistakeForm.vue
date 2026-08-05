@@ -70,23 +70,18 @@ watch(() => form.articleId, id => {
   }
 });
 
-function articleById(id) {
-  return state.data.articles.find(a => a.id === id);
-}
-
 function submit() {
   const articleId = form.articleId === "__other__" ? null : form.articleId;
-  if (!form.note.trim() && !articleId) {
-    ElMessage.warning("请填写具体经过，或选择触犯的条例～");
+  if (!form.note.trim() && !form.penalty.trim()) {
+    ElMessage.warning("请填写具体经过或惩罚措施～");
     return;
   }
-  const a = articleById(articleId);
   addMistake({
     date: form.date || today(),
     culprit: form.culprit,
     articleId,
     note: form.note.trim(),
-    penalty: form.penalty.trim() || (a && a.penalty !== "\\" ? a.penalty : "")
+    penalty: form.penalty.trim()
   });
   form.note = "";
   form.penalty = "";

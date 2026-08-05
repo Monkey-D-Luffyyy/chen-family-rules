@@ -408,5 +408,8 @@ window.__chenFamily = {
   saveData,
   deleteMistake,
   deleteArticle,
-  setDailyAnswer
+  setDailyAnswer,
+  addArticle,
+  updateArticle,
+  setDailyNote
 };
