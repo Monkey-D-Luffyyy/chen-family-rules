@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 
 export const STORAGE_KEY = "chen-family-rules-v1";
-export const APP_VERSION = "20260805.2";
+export const APP_VERSION = "20260929.1";
 
 const BUILTIN_SYNC = {
   url: "https://fzgrxauidtcjxvpyvnjn.supabase.co",

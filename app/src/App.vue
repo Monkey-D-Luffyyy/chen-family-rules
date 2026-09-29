@@ -9,6 +9,7 @@
     <DailyCheck />
     <FiveSteps />
     <SixHearts />
+    <SevenVirtues />
     <div class="foot">陈氏家法 · 版本 {{ APP_VERSION }}</div>
     <el-backtop :right="24" :bottom="40" />
   </el-config-provider>
@@ -30,6 +31,7 @@ const ArticlesCard = defineAsyncComponent({ loader: () => import("./components/A
 const DailyCheck = defineAsyncComponent({ loader: () => import("./components/DailyCheck.vue"), loadingComponent: Loading });
 const FiveSteps = defineAsyncComponent({ loader: () => import("./components/FiveSteps.vue"), loadingComponent: Loading });
 const SixHearts = defineAsyncComponent({ loader: () => import("./components/SixHearts.vue"), loadingComponent: Loading });
+const SevenVirtues = defineAsyncComponent({ loader: () => import("./components/SevenVirtues.vue"), loadingComponent: Loading });
 
 onMounted(() => {
   setTimeout(() => { syncNow(); }, 1200);
