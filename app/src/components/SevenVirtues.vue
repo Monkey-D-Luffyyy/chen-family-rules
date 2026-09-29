@@ -2,7 +2,7 @@
   <section class="card">
     <div class="sec-title">
       <span class="dot" style="background:var(--purple)"></span>
-      七件珍宝
+      七词之约
     </div>
     <div class="chips">
       <el-tag v-for="v in virtues" :key="v" size="large" effect="light" round class="chip">{{ v }}</el-tag>

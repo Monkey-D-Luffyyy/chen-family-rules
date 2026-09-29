@@ -1,0 +1,1 @@
+.chips[data-v-eb1766c2]{display:flex;gap:10px;flex-wrap:wrap}.chip[data-v-eb1766c2]{background:var(--purple-bg);color:#7b4f9d;border-color:#e2d0ef;font-size:15px;font-weight:700;letter-spacing:2px;padding:9px 18px}@media(max-width:720px){.chips[data-v-eb1766c2]{gap:8px}.chip[data-v-eb1766c2]{flex:1 1 calc(33% - 8px);justify-content:center;font-size:14px;padding:8px 14px}}
