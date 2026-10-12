@@ -3,3 +3,4 @@ app/dist/
 app/components.d.ts
 app/auto-imports.d.ts
 outputs/
+.secretsetup/

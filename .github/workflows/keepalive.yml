@@ -2,15 +2,15 @@ name: Keep Supabase alive
 
 on:
   schedule:
-    # 每 6 小时执行一次：先做一次访问（保活），若发现项目被暂停则自动恢复
-    - cron: "0 */6 * * *"
+    # 每小时自检一次：接口异常时按项目状态自动重启或恢复
+    - cron: "0 * * * *"
   workflow_dispatch: {}
 
 jobs:
   keepalive:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase and restore if paused
+      - name: Check Supabase and recover if needed
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_URL: https://fzgrxauidtcjxvpyvnjn.supabase.co
@@ -22,22 +22,39 @@ jobs:
             -H "Authorization: Bearer $ANON_KEY" \
             "$SUPABASE_URL/rest/v1/family_data?select=id&limit=1")
           echo "supabase status: $status"
-          echo "body: $(head -c 200 /tmp/body.txt)"
 
           if [ "$status" = "200" ]; then
-            echo "项目正常，无需恢复。"
+            echo "项目正常，无需处理。"
             exit 0
           fi
 
           if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
-            echo "项目不可用，但仓库未配置 SUPABASE_ACCESS_TOKEN，无法自动恢复。"
-            echo "请在 Supabase 生成 Access Token，并添加为仓库 Secret（名称：SUPABASE_ACCESS_TOKEN）。"
+            echo "项目不可用，且仓库未配置 SUPABASE_ACCESS_TOKEN，无法自动修复。"
             exit 1
           fi
 
-          echo "检测到项目不可用，尝试自动恢复…"
-          restore=$(curl -s -o /tmp/restore.txt -w "%{http_code}" -X POST \
-            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
-            "https://api.supabase.com/v1/projects/$PROJECT_REF/restore")
-          echo "restore status: $restore"
-          echo "restore body: $(head -c 300 /tmp/restore.txt)"
+          project=$(curl -s -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            "https://api.supabase.com/v1/projects/$PROJECT_REF")
+          pstatus=$(echo "$project" | sed -n 's/.*"status":"\([^"]*\)".*/\1/p')
+          echo "project status: $pstatus"
+
+          case "$pstatus" in
+            *INACTIVE*|*PAUSED*)
+              echo "项目被暂停，执行恢复…"
+              code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X POST \
+                -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+                "https://api.supabase.com/v1/projects/$PROJECT_REF/restore")
+              ;;
+            *COMING_UP*|*RESTORING*|*UPGRADING*|*PAUSING*)
+              echo "项目正在启动或恢复中，等待下一次检查。"
+              exit 0
+              ;;
+            *)
+              echo "项目不健康，执行重启…"
+              code=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X POST \
+                -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+                "https://api.supabase.com/v1/projects/$PROJECT_REF/restart")
+              ;;
+          esac
+          echo "recovery http status: $code"
+          echo "recovery body: $(head -c 300 /tmp/resp.txt)"
